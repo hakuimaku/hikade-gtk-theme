@@ -1,0 +1,192 @@
+/* GTK3 has no numeric CSS variables. Geometry is grouped here:
+ * radius 8px; spacing 2/4/8/12px; color fades 200ms. */
+* {
+  border: none;
+  box-shadow: none;
+  text-shadow: none;
+  -gtk-icon-shadow: none;
+  outline-style: none;
+}
+
+window, .background, dialog {
+  background-color: @haku_base;
+  color: @haku_fg;
+}
+
+button, entry, spinbutton, combobox, switch, scale, scrollbar,
+row, check, radio, checkbutton, radiobutton, menuitem, modelbutton,
+switch slider, scale slider, scrollbar slider, notebook > header > tabs > tab {
+  transition: background-color 200ms ease-in-out, color 200ms ease-in-out;
+}
+
+button, entry, spinbutton, notebook > header > tabs > tab {
+  min-height: 24px;
+  border-radius: 8px;
+  padding: 4px 8px;
+  color: @haku_fg;
+  background-image: none;
+  background-color: @haku_surface;
+}
+
+button { min-width: 20px; }
+button.flat, button.link { background-color: transparent; }
+button:hover { background-color: @haku_hover; }
+button:active, button:checked { background-color: @haku_active; }
+button:focus, button:checked:focus { background-color: @haku_focus; }
+button:disabled { background-color: @haku_surface; }
+button.flat:disabled { background-color: transparent; }
+button.link { color: @haku_fg; text-decoration-line: underline; }
+button.link:visited { color: @haku_secondary; }
+
+entry, spinbutton { caret-color: @haku_white; }
+entry:focus, entry:focus-within, spinbutton:focus-within {
+  background-color: @haku_active;
+}
+entry image { color: @haku_secondary; }
+spinbutton button { min-width: 16px; padding: 2px 4px; }
+selection, entry selection {
+  background-color: @haku_thumb;
+  color: @haku_fg;
+}
+
+check, radio {
+  min-width: 18px;
+  min-height: 18px;
+  margin: 2px 4px;
+  border-radius: 4px;
+  color: @haku_white;
+  background-color: @haku_active;
+  -gtk-icon-source: none;
+}
+radio { border-radius: 50%; }
+check:hover, radio:hover { background-color: @haku_focus; }
+check:checked, radio:checked, check:indeterminate, radio:indeterminate {
+  background-color: @haku_thumb;
+}
+check:checked { -gtk-icon-source: -gtk-recolor(url("../assets/check.svg")); }
+check:indeterminate, radio:indeterminate {
+  -gtk-icon-source: -gtk-recolor(url("../assets/minus.svg"));
+}
+radio:checked { -gtk-icon-source: -gtk-recolor(url("../assets/dot.svg")); }
+checkbutton:focus, radiobutton:focus {
+  background-color: @haku_hover;
+  border-radius: 8px;
+}
+
+switch {
+  min-width: 40px;
+  min-height: 24px;
+  border-radius: 8px;
+  background-color: @haku_active;
+  color: @haku_secondary;
+}
+switch:checked { background-color: @haku_thumb; }
+switch:focus { background-color: @haku_focus; }
+switch slider {
+  min-width: 18px;
+  min-height: 18px;
+  margin: 3px;
+  border-radius: 6px;
+  background-color: @haku_secondary;
+}
+switch:checked slider { background-color: @haku_fg; }
+
+headerbar {
+  padding: 4px 8px;
+  min-height: 36px;
+  background-color: @haku_sidebar;
+  background-image: none;
+  color: @haku_fg;
+}
+headerbar button { background-color: transparent; }
+headerbar button:hover { background-color: @haku_hover; }
+headerbar button:checked, headerbar button:active, headerbar button:focus {
+  background-color: @haku_focus;
+}
+.title { font-weight: bold; }
+.subtitle, .dim-label { color: @haku_secondary; }
+
+list, listbox { background-color: @haku_base; color: @haku_fg; }
+row { padding: 4px 8px; border-radius: 8px; }
+row:hover { background-color: @haku_hover; }
+row:focus { background-color: @haku_active; }
+row:selected { background-color: @haku_selection; color: @haku_fg; }
+row:selected:focus { background-color: @haku_focus; }
+row:selected:backdrop { background-color: @haku_selection_backdrop; }
+filechooser .sidebar-icon:dir(ltr) { margin-right: 12px; }
+filechooser .sidebar-icon:dir(rtl) { margin-left: 12px; }
+/* Symbolic file icons follow the foreground instead of fixed dark icon colors. */
+filechooser .view { -gtk-icon-style: symbolic; }
+
+notebook { background-color: @haku_base; }
+notebook > header { padding: 4px; background-color: @haku_sidebar; }
+notebook > header > tabs > tab {
+  margin: 0 2px;
+  background-color: transparent;
+  color: @haku_secondary;
+}
+notebook > header > tabs > tab:hover { background-color: @haku_hover; }
+notebook > header > tabs > tab:checked {
+  background-color: @haku_active;
+  color: @haku_fg;
+}
+notebook > header > tabs > tab:focus { background-color: @haku_focus; }
+notebook tab button { min-width: 16px; min-height: 16px; padding: 2px; }
+
+scrollbar { background-color: transparent; }
+scrollbar slider {
+  min-width: 8px;
+  min-height: 8px;
+  margin: 2px;
+  border-radius: 8px;
+  background-color: @haku_thumb;
+}
+scrollbar.vertical slider { min-height: 32px; }
+scrollbar.horizontal slider { min-width: 32px; }
+scrollbar slider:hover { background-color: @haku_thumb_hover; }
+scrollbar slider:active { background-color: @haku_secondary; }
+scrollbar button { min-width: 0; min-height: 0; padding: 0; background: none; }
+
+progressbar trough, scale trough, levelbar trough {
+  min-height: 4px;
+  min-width: 4px;
+  border-radius: 8px;
+  background-color: @haku_active;
+}
+progressbar progress, scale highlight, levelbar block.filled {
+  min-height: 4px;
+  min-width: 4px;
+  border-radius: 8px;
+  background-color: @haku_secondary;
+}
+scale { padding: 8px; }
+scale slider {
+  min-width: 16px;
+  min-height: 16px;
+  border-radius: 8px;
+  background-color: @haku_fg;
+}
+scale:focus slider { background-color: @haku_white; }
+scale marks, progressbar text { color: @haku_secondary; }
+separator { min-width: 1px; min-height: 1px; background-color: @haku_hover; }
+paned > separator { min-width: 4px; min-height: 4px; background: transparent; }
+rubberband { background-color: alpha(@haku_secondary, 0.18); border-radius: 8px; }
+
+tooltip {
+  padding: 8px;
+  border-radius: 8px;
+  background-color: @haku_active;
+  color: @haku_fg;
+}
+textview, textview text { background-color: @haku_base; color: @haku_fg; }
+/* Wrapped confirmation text needs room even when button labels are short. */
+messagedialog .dialog-vbox { min-width: 320px; padding: 12px; }
+messagedialog .dialog-action-area { padding: 8px; }
+.error { color: @error_color; }
+.warning { color: @warning_color; }
+.success { color: @success_color; }
+:disabled { color: @haku_disabled; }
+check:disabled, radio:disabled, switch:disabled slider, scale:disabled slider {
+  background-color: @haku_active;
+  color: @haku_disabled;
+}
