@@ -121,6 +121,14 @@ def finish():
             import cairo
             bg = window.get_style_context().get_background_color(Gtk.StateFlags.NORMAL)
             assert abs(bg.red - 16 / 255) < 0.001 and bg.red == bg.green == bg.blue
+            # GTK3 paints empty space below rows with this focused cell context.
+            context = tree.get_style_context()
+            context.save()
+            context.add_class("cell")
+            context.set_state(Gtk.StateFlags.FOCUSED)
+            empty_bg = context.get_background_color(Gtk.StateFlags.FOCUSED)
+            context.restore()
+            assert empty_bg.alpha == 0 or abs(empty_bg.red - 16 / 255) < 0.001, empty_bg
             for state in (Gtk.StateFlags.NORMAL, Gtk.StateFlags.PRELIGHT, Gtk.StateFlags.ACTIVE, Gtk.StateFlags.INSENSITIVE):
                 context = normal.get_style_context()
                 context.save()

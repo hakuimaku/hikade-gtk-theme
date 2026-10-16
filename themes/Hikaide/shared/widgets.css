@@ -170,7 +170,7 @@ scale:focus slider { background-color: @haku_white; }
 scale marks, progressbar text { color: @haku_secondary; }
 separator { min-width: 1px; min-height: 1px; background-color: @haku_hover; }
 paned > separator { min-width: 4px; min-height: 4px; background: transparent; }
-rubberband { background-color: alpha(@haku_secondary, 0.18); border-radius: 8px; }
+rubberband { background-color: alpha(@haku_secondary, 0.18); border-radius: 0; }
 
 tooltip {
   padding: 8px;

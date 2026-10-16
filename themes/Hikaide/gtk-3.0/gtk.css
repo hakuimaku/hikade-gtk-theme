@@ -20,18 +20,19 @@ treeview header button:focus { background-color: @haku_focus; }
 .view.cell, .view row { background-color: transparent; }
 .view.cell:hover, .view:hover, iconview:hover {
   background-color: @haku_hover;
-  border-radius: 8px;
+  border-radius: 0;
 }
 .view:selected, .view.cell:selected, .view row:selected, iconview:selected {
   background-color: @haku_selection;
   color: @haku_fg;
-  border-radius: 8px;
+  border-radius: 0;
 }
 .view:selected:backdrop, .view.cell:selected:backdrop, iconview:selected:backdrop {
   background-color: @haku_selection_backdrop;
   color: @haku_fg;
 }
-.view.cell:focus, iconview:focus { background-color: @haku_active; }
+/* GTK3 also paints the empty list area with the focused cell context. */
+iconview:focus { background-color: @haku_active; }
 .view.cell:selected:focus, iconview:selected:focus { background-color: @haku_focus; }
 treeview.view:hover { background-color: @haku_base; }
 treeview.view:selected:hover { background-color: @haku_selection; }
@@ -40,16 +41,13 @@ treeview.view:selected:hover { background-color: @haku_selection; }
 /* GTK3 loads file-list surfaces at the chooser node before CSS can recolor them. */
 filechooser { -gtk-icon-theme: "Adwaita"; }
 filechooser > * { -gtk-icon-theme: initial; }
-filechooser treeview.view:hover,
-filechooser treeview.view:selected,
-filechooser treeview.view.cell:hover,
-filechooser treeview.view.cell:selected { border-radius: 0; }
 
 toolbar, menubar, statusbar {
   padding: 4px 8px;
   background-color: @haku_base;
   color: @haku_fg;
 }
+toolbar { padding: 8px 12px; }
 toolbar button { background-color: transparent; }
 toolbar button:hover { background-color: @haku_hover; }
 toolbar button:checked, toolbar button:active { background-color: @haku_active; }
@@ -58,7 +56,7 @@ statusbar { color: @haku_secondary; }
 statusbar frame { padding: 0; }
 
 menu, .menu, popover {
-  padding: 4px;
+  padding: 8px;
   border-radius: 8px;
   background-color: @haku_surface;
   background-image: none;
@@ -71,6 +69,7 @@ menuitem, modelbutton {
   border-radius: 8px;
   background-color: transparent;
 }
+menu menuitem, popover modelbutton { padding: 8px 16px; }
 menuitem:hover, modelbutton:hover, modelbutton:focus {
   background-color: @haku_active;
   color: @haku_fg;
@@ -93,24 +92,32 @@ dialog .dialog-vbox { padding: 12px; }
 dialog .dialog-action-area { padding: 8px; }
 
 /* Inspected on Thunar 4.20: ExoIconView is widget.view, not iconview. */
-window.thunar { background-color: @haku_base; }
-.thunar menubar, .thunar toolbar { padding: 8px 12px; }
-.thunar menubar > menuitem, .thunar toolbar button, .thunar toolbar entry {
-  padding: 6px 12px;
-}
+window.thunar { background-color: @haku_base; font-size: 0.9em; }
+.thunar menubar { padding: 8px 12px; }
+.thunar toolbar { padding: 12px 16px; }
+.thunar menubar > menuitem { padding: 6px 12px; }
+.thunar toolbar button, .thunar toolbar entry { padding: 8px 14px; }
+.thunar .path-bar > button.location-button.toggle { padding: 10px 16px; }
 .thunar menubar > menuitem { margin: 0 2px; }
 .thunar toolbar button { margin: 0 4px; }
 .thunar toolbar entry { margin: 0 8px; }
 /* Thunar gives the breadcrumb arrow buttons a fixed, compact allocation. */
 .thunar .path-bar > button.location-button:not(.toggle) {
   min-width: 16px;
-  padding: 6px 4px;
+  padding: 8px 4px;
   margin: 0 2px;
 }
 .thunar .sidebar, .thunar .sidebar treeview {
   background-color: @haku_sidebar;
   color: @haku_secondary;
 }
+.thunar .sidebar { padding: 0 8px; }
+/* Overlay scrollbars need an opaque gutter beside row highlights. */
+.thunar .sidebar scrollbar.vertical {
+  background-color: @haku_sidebar;
+}
+.thunar .sidebar scrollbar.vertical.right { padding-left: 8px; }
+.thunar .sidebar scrollbar.vertical.left { padding-right: 8px; }
 .thunar .sidebar treeview:hover { background-color: @haku_sidebar; }
 .thunar .sidebar .cell { padding: 4px; border-radius: 8px; }
 .thunar .sidebar .cell:hover { background-color: @haku_hover; color: @haku_fg; }
@@ -124,9 +131,7 @@ window.thunar { background-color: @haku_base; }
   background-color: @haku_selection_backdrop;
   color: @haku_fg;
 }
-.thunar .standard-view .view { border-radius: 8px; }
-.thunar .standard-view .view:selected,
-.thunar .standard-view .view row:selected { border-radius: 0; }
+.thunar .standard-view .view { border-radius: 0; }
 .thunar .standard-view { background-color: @haku_base; }
 /* Thunar multiplies icons by the Exo view's state background; alpha keeps them legible. */
 .thunar .standard-view widget.view { background-color: transparent; }

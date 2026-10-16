@@ -103,6 +103,7 @@ def thunar_checks(temporary, env, output):
     subprocess.run(["cc", "-shared", "-fPIC", "-Wno-deprecated-declarations", str(ROOT / "tests/thunar_probe.c"), "-o", str(module), *flags, "-ldl"], check=True)
     files = temporary / "files"
     files.mkdir()
+    (temporary / "config/gtk-3.0/bookmarks").write_text(f"{files.as_uri()} Projects\n")
     (files / "Documents").mkdir()
     (files / "Empty folder").mkdir()
     for name in ("A long filename for selection and renaming.txt", ".hidden-file", "README.md"):

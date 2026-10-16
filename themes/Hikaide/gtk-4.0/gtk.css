@@ -13,8 +13,7 @@ listview, gridview, columnview, .view {
   background-color: @haku_base;
   color: @haku_fg;
 }
-listview > row, gridview > child { padding: 4px 8px; border-radius: 8px; }
-filechooser listview > row { border-radius: 0; }
+listview > row, gridview > child { padding: 4px 8px; border-radius: 0; }
 gridview > child:hover { background-color: @haku_hover; }
 gridview > child:focus { background-color: @haku_active; }
 gridview > child:selected { background-color: @haku_selection; color: @haku_fg; }
@@ -28,7 +27,7 @@ columnview header button:hover { background-color: @haku_hover; }
 
 popover { background-color: transparent; }
 popover > contents {
-  padding: 4px;
+  padding: 8px;
   border-radius: 8px;
   background-color: @haku_surface;
   color: @haku_fg;
@@ -36,7 +35,7 @@ popover > contents {
 popover > arrow { background-color: @haku_surface; }
 popover modelbutton {
   min-height: 24px;
-  padding: 4px 8px;
+  padding: 8px 16px;
   border-radius: 8px;
 }
 popover modelbutton:hover, popover modelbutton:focus, popover modelbutton:selected {

@@ -4,6 +4,8 @@ A quiet, monochrome GTK3 and GTK4 theme inspired by HakuSpace, with Thunar as it
 
 Near-black surfaces, soft gray text, borderless controls, and subtle state changes keep the interface calm. Hikaide uses a `#101010` base, `#d8d8d8` text, 8px interactive corners, 200ms color fades, and opaque context menus. File chooser sidebars leave 12px between icons and labels.
 
+File view hover and selection highlights have square corners, and empty list space stays dark when focused. Thunar uses 90% of the desktop font size, 8px sidebar insets with an 8px scrollbar gutter, 12px × 16px toolbar padding, and 10px × 16px padding inside breadcrumb buttons.
+
 ## Preview
 
 **Thunar** — spacious menus and navigation controls, a flat breadcrumb bar, and a subtly separated sidebar.

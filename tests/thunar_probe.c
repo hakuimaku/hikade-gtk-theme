@@ -104,6 +104,13 @@ static gboolean exercise(gpointer unused) {
     if (g_str_equal(G_OBJECT_TYPE_NAME(l->data), "ThunarWindow")) main_window = l->data;
   g_list_free(windows);
   g_assert_nonnull(main_window);
+  char *desktop_font;
+  g_object_get(gtk_settings_get_default(), "gtk-font-name", &desktop_font, NULL);
+  PangoFontDescription *desktop_description = pango_font_description_from_string(desktop_font);
+  const PangoFontDescription *window_font = gtk_style_context_get_font(gtk_widget_get_style_context(main_window), GTK_STATE_FLAG_NORMAL);
+  g_assert_cmpfloat_with_epsilon((double)pango_font_description_get_size(window_font) / pango_font_description_get_size(desktop_description), 0.9, 0.01);
+  pango_font_description_free(desktop_description);
+  g_free(desktop_font);
   GdkRGBA bg;
   gtk_style_context_get_background_color(gtk_widget_get_style_context(main_window), GTK_STATE_FLAG_NORMAL, &bg);
   g_assert_cmpfloat_with_epsilon(bg.red, 16.0 / 255, 0.001);
