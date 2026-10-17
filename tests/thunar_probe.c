@@ -98,6 +98,31 @@ static void select_file(void) {
   gtk_widget_grab_focus(view);
 }
 
+/* Exo paints the drag rectangle with a class on the view itself. */
+static void check_rubberband(void) {
+  GtkWidget *view = find_type(main_window, "ExoIconView"); /* Real Thunar icon view. */
+  g_assert_nonnull(view);
+  GtkStyleContext *context = gtk_widget_get_style_context(view); /* Exo's rectangle drawing context. */
+  /* Cover pointer, selection and window focus states. */
+  const GtkStateFlags states[] = {GTK_STATE_FLAG_NORMAL, GTK_STATE_FLAG_FOCUSED, GTK_STATE_FLAG_PRELIGHT,
+                                 GTK_STATE_FLAG_SELECTED, GTK_STATE_FLAG_ACTIVE, GTK_STATE_FLAG_BACKDROP,
+                                 GTK_STATE_FLAG_SELECTED | GTK_STATE_FLAG_BACKDROP};
+  for (guint i = 0; i < G_N_ELEMENTS(states); i++) { /* Check each drawing state. */
+    GdkRGBA fill, border; /* Rectangle fill and outline colors. */
+    GtkBorder widths; /* Visible outline thickness. */
+    gtk_style_context_save(context);
+    gtk_style_context_set_state(context, states[i]);
+    gtk_style_context_add_class(context, GTK_STYLE_CLASS_RUBBERBAND);
+    gtk_style_context_get_background_color(context, states[i], &fill);
+    gtk_style_context_get_border_color(context, states[i], &border);
+    gtk_style_context_get_border(context, states[i], &widths);
+    g_assert_cmpfloat(fill.alpha, >, 0.1);
+    g_assert_cmpfloat(border.alpha, >, 0.4);
+    g_assert_cmpint(widths.top, ==, 1);
+    gtk_style_context_restore(context);
+  }
+}
+
 static gboolean exercise(gpointer unused) {
   GList *windows = gtk_window_list_toplevels();
   for (GList *l = windows; l; l = l->next)
@@ -117,6 +142,7 @@ static gboolean exercise(gpointer unused) {
   g_assert_cmpfloat_with_epsilon(bg.green, bg.red, 0.001);
   g_assert_cmpfloat_with_epsilon(bg.blue, bg.red, 0.001);
   action("<Actions>/ThunarWindow/view-as-icons");
+  check_rubberband();
   /* Schedule before actions: modal dialogs enter their own main loop. */
   g_timeout_add(700, capture, NULL);
   if (g_str_equal(scenario, "detailed")) {

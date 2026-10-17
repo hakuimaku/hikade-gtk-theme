@@ -88,6 +88,8 @@ def main():
                 run(["python3", str(ROOT / "tests/gtk_smoke.py"), version, str(output / f"gtk-{version}.png")], env, output / f"gtk-{version}.log")
                 print(f"PASS GTK {version}", flush=True)
                 if version == "3.0":
+                    run(["python3", str(ROOT / "tests/gtk_filechooser.py"), str(output / "gtk-filechooser.png")], env, output / "gtk-filechooser.log")
+                    print("PASS GTK3 file chooser icon theme and recoloring", flush=True)
                     run(["python3", str(ROOT / "tests/gtk_fade.py")], env, output / "gtk-fade.log")
                     print("PASS GTK3 fade timing and reduced motion", flush=True)
             if version == "3.0" and args.thunar:

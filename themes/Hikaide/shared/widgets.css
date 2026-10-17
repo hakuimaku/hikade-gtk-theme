@@ -115,8 +115,8 @@ row:selected:focus { background-color: @haku_focus; }
 row:selected:backdrop { background-color: @haku_selection_backdrop; }
 filechooser .sidebar-icon:dir(ltr) { margin-right: 12px; }
 filechooser .sidebar-icon:dir(rtl) { margin-left: 12px; }
-/* Symbolic file icons follow the foreground instead of fixed dark icon colors. */
-filechooser .view { -gtk-icon-style: symbolic; }
+/* GTK3 caches file icons at the chooser node; symbolic icons follow its foreground. */
+filechooser, filechooser .view { -gtk-icon-style: symbolic; }
 
 notebook { background-color: @haku_base; }
 notebook > header { padding: 4px; background-color: @haku_sidebar; }

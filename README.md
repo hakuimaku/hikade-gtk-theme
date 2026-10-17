@@ -20,7 +20,7 @@ File view hover and selection highlights have square corners, and empty list spa
 | --- | --- |
 | ![GTK3 buttons, entries, selection, checkboxes, tabs, and sliders](docs/images/gtk3-widgets.png) | ![GTK4 buttons, entries, lists, dropdowns, and sliders](docs/images/gtk4-widgets.png) |
 
-These are renders of real GTK widgets. Hikaide does not bundle icons or fonts. GTK4 file chooser lists prefer symbolic icons, which follow the theme's foreground color. GTK3 file chooser lists use Adwaita icons to keep fixed dark icons readable; other controls retain the selected icon theme.
+These are renders of real GTK widgets. Hikaide does not bundle icons or fonts. GTK3 and GTK4 file chooser lists prefer symbolic icons from the selected icon theme, which follow the foreground color. Thunar's drag-selection rectangle has a translucent gray fill and a 1px border.
 
 ## Install
 

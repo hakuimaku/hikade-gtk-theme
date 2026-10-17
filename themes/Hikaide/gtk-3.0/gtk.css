@@ -38,9 +38,6 @@ treeview.view:hover { background-color: @haku_base; }
 treeview.view:selected:hover { background-color: @haku_selection; }
 .view entry { background-color: @haku_surface; color: @haku_fg; border-radius: 8px; }
 .view entry:focus { background-color: @haku_active; }
-/* GTK3 loads file-list surfaces at the chooser node before CSS can recolor them. */
-filechooser { -gtk-icon-theme: "Adwaita"; }
-filechooser > * { -gtk-icon-theme: initial; }
 
 toolbar, menubar, statusbar {
   padding: 4px 8px;
@@ -139,6 +136,12 @@ window.thunar { background-color: @haku_base; font-size: 0.9em; }
 .thunar .standard-view widget.view:selected { background-color: alpha(@haku_white, 0.107); }
 .thunar .standard-view widget.view:active,
 .thunar .standard-view widget.view:selected:backdrop { background-color: alpha(@haku_white, 0.07); }
+/* Exo adds a class to the view instead of creating a rubberband node. */
+.thunar .standard-view widget.view.rubberband,
+.thunar .standard-view widget.view.rubberband:backdrop {
+  background-color: alpha(@haku_secondary, 0.18);
+  border: 1px solid alpha(@haku_secondary, 0.6);
+}
 .thunar statusbar { background-color: @haku_base; color: @haku_secondary; }
 .thunar notebook > header > tabs > tab button { background-color: transparent; color: @haku_secondary; }
 .thunar notebook > header > tabs > tab button:hover { background-color: @haku_hover; color: @haku_fg; }
