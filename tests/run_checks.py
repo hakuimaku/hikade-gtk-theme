@@ -61,10 +61,11 @@ def display_server(temporary, env, daemon, display, log_path):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--variant", choices=("dark", "light"), default="dark")
     parser.add_argument("--thunar", action="store_true", help="also test Thunar's views, menus and workflow dialogs")
     parser.add_argument("--output", type=Path, default=ROOT / ".test-output")
     args = parser.parse_args()
-    output = args.output.resolve()
+    output = args.output.resolve() / args.variant
     output.mkdir(parents=True, exist_ok=True)
     failures = []
     subprocess.run(["python3", "-m", "unittest", "discover", "-s", str(ROOT / "tests"), "-v"], check=True)
@@ -77,16 +78,30 @@ def main():
             env[variable] = str(location)
         theme_root = temporary / "data/themes"
         subprocess.run(["python3", str(ROOT / "scripts/install_gtk_theme.py"), "--dest", str(theme_root)], check=True, stdout=subprocess.DEVNULL)
+        theme_name = "Hikaide-Light" if args.variant == "light" else "Hikaide"
         for version in ("3.0", "4.0"):
             config = temporary / f"config/gtk-{version}"
             config.mkdir()
-            (config / "gtk.css").symlink_to(theme_root / f"Hikaide/gtk-{version}/gtk.css")
-        env.update(GTK_THEME="Hikaide:dark", GDK_BACKEND="broadway", GSK_RENDERER="cairo", NO_AT_BRIDGE="1", GIO_USE_VFS="local", GIO_USE_VOLUME_MONITOR="unix", GTK_A11Y="none", LC_ALL="C.UTF-8")
+            (config / "gtk.css").symlink_to(theme_root / f"{theme_name}/gtk-{version}/gtk.css")
+        env.update(GTK_THEME=theme_name, HIKAIDE_VARIANT=args.variant, GDK_BACKEND="broadway", GSK_RENDERER="cairo", NO_AT_BRIDGE="1", GIO_USE_VFS="local", GIO_USE_VOLUME_MONITOR="unix", GTK_A11Y="none", LC_ALL="C.UTF-8")
         env.pop("GTK_MODULES", None)
         for version, daemon, display in (("3.0", "broadwayd", 31), ("4.0", "gtk4-broadwayd", 41)):
             with display_server(temporary, env, daemon, display, output / f"broadway-{version}.log"):
                 run(["python3", str(ROOT / "tests/gtk_smoke.py"), version, str(output / f"gtk-{version}.png")], env, output / f"gtk-{version}.log")
                 print(f"PASS GTK {version}", flush=True)
+                if args.variant == "light":
+                    # Exercise applications that explicitly request the light theme's dark fallback.
+                    alias = temporary / f"config/gtk-{version}/gtk.css"
+                    alias.unlink()
+                    alias.symlink_to(theme_root / f"Hikaide-Light/gtk-{version}/gtk-dark.css")
+                    try:
+                        fallback_env = dict(env, GTK_THEME="Hikaide-Light:dark", HIKAIDE_VARIANT="dark")
+                        run(["python3", str(ROOT / "tests/gtk_smoke.py"), version, str(output / f"gtk-{version}-dark-fallback.png")],
+                            fallback_env, output / f"gtk-{version}-dark-fallback.log")
+                        print(f"PASS GTK {version} explicit dark fallback", flush=True)
+                    finally:
+                        alias.unlink()
+                        alias.symlink_to(theme_root / f"Hikaide-Light/gtk-{version}/gtk.css")
                 if version == "3.0":
                     run(["python3", str(ROOT / "tests/gtk_filechooser.py"), str(output / "gtk-filechooser.png")], env, output / "gtk-filechooser.log")
                     print("PASS GTK3 file chooser icon theme and recoloring", flush=True)

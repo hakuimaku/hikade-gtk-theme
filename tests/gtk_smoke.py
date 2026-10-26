@@ -2,6 +2,7 @@
 
 from pathlib import Path
 import sys
+import os
 
 import gi
 
@@ -10,6 +11,10 @@ gi.require_version("Gtk", version)
 from gi.repository import Gio, GLib, Gtk
 
 ROOT = Path(__file__).resolve().parents[1]
+light = os.environ.get("HIKAIDE_VARIANT") == "light"
+theme_name = os.environ.get("GTK_THEME", "Hikaide").split(":")[0]
+base = (247 if light else 16) / 255
+foreground = (27 if light else 216) / 255
 errors = []
 providers = []
 if not Gtk.init_check():
@@ -17,7 +22,7 @@ if not Gtk.init_check():
 for name in ("gtk.css", "gtk-dark.css"):
     provider = Gtk.CssProvider()
     provider.connect("parsing-error", lambda p, section, error: errors.append(str(error)))
-    provider.load_from_path(str(ROOT / "themes/Hikaide" / f"gtk-{version}" / name))
+    provider.load_from_path(str(ROOT / f"themes/{theme_name}" / f"gtk-{version}" / name))
     providers.append(provider)
 assert not errors, errors
 
@@ -51,7 +56,7 @@ disabled = add(buttons, Gtk.Button(label="Disabled"))
 disabled.set_sensitive(False)
 entry = add(box, Gtk.Entry(text="Editable location / filename"))
 entry.set_placeholder_text("Location")
-entry.set_tooltip_text("Dark tooltip with readable text")
+entry.set_tooltip_text("Tooltip with readable text")
 controls = add(box, Gtk.Box(spacing=8))
 check = add(controls, Gtk.CheckButton(label="Checked"))
 check.set_active(True)
@@ -75,7 +80,7 @@ notebook = add(box, Gtk.Notebook())
 notebook.append_page(Gtk.Label(label="Active tab content"), Gtk.Label(label="Files"))
 notebook.append_page(Gtk.Label(label="Second tab content"), Gtk.Label(label="Details"))
 listing = add(box, Gtk.ListBox())
-for title in ("Idle row", "Selected row", "A long filename remains readable in a dark view"):
+for title in ("Idle row", "Selected row", "A long filename remains readable in the view"):
     add(listing, Gtk.Label(label=title, xalign=0))
 listing.select_row(listing.get_row_at_index(1))
 if not gtk3:
@@ -120,7 +125,7 @@ def finish():
         if gtk3:
             import cairo
             bg = window.get_style_context().get_background_color(Gtk.StateFlags.NORMAL)
-            assert abs(bg.red - 16 / 255) < 0.001 and bg.red == bg.green == bg.blue
+            assert abs(bg.red - base) < 0.001 and bg.red == bg.green == bg.blue
             # GTK3 paints empty space below rows with this focused cell context.
             context = tree.get_style_context()
             context.save()
@@ -128,21 +133,21 @@ def finish():
             context.set_state(Gtk.StateFlags.FOCUSED)
             empty_bg = context.get_background_color(Gtk.StateFlags.FOCUSED)
             context.restore()
-            assert empty_bg.alpha == 0 or abs(empty_bg.red - 16 / 255) < 0.001, empty_bg
+            assert empty_bg.alpha == 0 or abs(empty_bg.red - base) < 0.001, empty_bg
             for state in (Gtk.StateFlags.NORMAL, Gtk.StateFlags.PRELIGHT, Gtk.StateFlags.ACTIVE, Gtk.StateFlags.INSENSITIVE):
                 context = normal.get_style_context()
                 context.save()
                 context.set_state(state)
                 fg = context.get_color(state)
                 assert fg.red == fg.green == fg.blue, (state, fg)
-                assert fg.red >= 0.46, (state, fg)
+                assert (fg.red <= 0.47 if light else fg.red >= 0.46), (state, fg)
                 context.restore()
             context = normal.get_style_context()
             context.save()
             context.set_state(Gtk.StateFlags.FOCUSED)
             focus_bg = context.get_background_color(Gtk.StateFlags.FOCUSED)
             context.restore()
-            assert focus_bg.red > context.get_background_color(Gtk.StateFlags.NORMAL).red
+            assert (focus_bg.red < context.get_background_color(Gtk.StateFlags.NORMAL).red) == light
             surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, window.get_allocated_width(), window.get_allocated_height())
             window.draw(cairo.Context(surface))
             surface.write_to_png(output)
@@ -153,7 +158,7 @@ def finish():
             window.allocate(760, 650, -1, None)
             snapshot = Gtk.Snapshot()
             found, background = window.get_style_context().lookup_color("haku_base")
-            assert found and abs(background.red - 16 / 255) < 0.001
+            assert found and abs(background.red - base) < 0.001
             snapshot.append_color(background, Graphene.Rect().init(0, 0, 760, 650))
             window.snapshot_child(box, snapshot)
             node = snapshot.to_node()
@@ -165,7 +170,7 @@ def finish():
             finally:
                 renderer.unrealize()
             color = normal.get_color()
-            assert color.red == color.green == color.blue and abs(color.red - 216 / 255) < 0.001
+            assert color.red == color.green == color.blue and abs(color.red - foreground) < 0.001
         print(f"GTK {version}: both CSS variants parsed; widget render and assertions passed")
     except Exception as error:
         failure.append(error)

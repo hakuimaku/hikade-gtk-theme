@@ -38,7 +38,7 @@ button.flat:disabled { background-color: transparent; }
 button.link { color: @haku_fg; text-decoration-line: underline; }
 button.link:visited { color: @haku_secondary; }
 
-entry, spinbutton { caret-color: @haku_white; }
+entry, spinbutton { caret-color: @haku_caret; }
 entry:focus, entry:focus-within, spinbutton:focus-within {
   background-color: @haku_active;
 }
@@ -54,7 +54,7 @@ check, radio {
   min-height: 18px;
   margin: 2px 4px;
   border-radius: 4px;
-  color: @haku_white;
+  color: @haku_indicator;
   background-color: @haku_active;
   -gtk-icon-source: none;
 }
@@ -166,8 +166,8 @@ scale slider {
   border-radius: 8px;
   background-color: @haku_fg;
 }
-scale:focus slider { background-color: @haku_white; }
-scale marks, progressbar text { color: @haku_secondary; }
+scale:focus slider { background-color: @haku_indicator; }
+scale, scale marks, progressbar text { color: @haku_secondary; }
 separator { min-width: 1px; min-height: 1px; background-color: @haku_hover; }
 paned > separator { min-width: 4px; min-height: 4px; background: transparent; }
 rubberband { background-color: alpha(@haku_secondary, 0.18); border-radius: 0; }

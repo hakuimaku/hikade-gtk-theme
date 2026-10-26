@@ -21,6 +21,7 @@ row = Gtk.ListBoxRow()
 row.add(Gtk.Label(label="Row fade"))
 box.add(row)
 targets = (button, item, row)
+base = window.get_style_context().lookup_color("haku_base")[1].red
 window.show_all()
 loop = GLib.MainLoop()
 failure = []
@@ -33,7 +34,7 @@ def colors():
     result = []
     for widget in targets:
         color = widget.get_style_context().get_background_color(widget.get_state_flags())
-        result.append(color.red * color.alpha + (16 / 255) * (1 - color.alpha))
+        result.append(color.red * color.alpha + base * (1 - color.alpha))
     return result
 
 

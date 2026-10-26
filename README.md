@@ -4,7 +4,7 @@ A quiet, monochrome GTK3 and GTK4 theme inspired by HakuSpace, with Thunar as it
 
 Near-black surfaces, soft gray text, borderless controls, and subtle state changes keep the interface calm. Hikaide uses a `#101010` base, `#d8d8d8` text, 8px interactive corners, 200ms color fades, and opaque context menus. File chooser sidebars leave 12px between icons and labels.
 
-File view hover and selection highlights have square corners, and empty list space stays dark when focused. Thunar uses 90% of the desktop font size, 8px sidebar insets with an 8px scrollbar gutter, 12px × 16px toolbar padding, and 10px × 16px padding inside breadcrumb buttons.
+Light-mode Thunar file hover uses white highlights in icon, compact and detailed views; selected items retain their selection paint. File view hover and selection highlights have square corners, and empty list space stays dark when focused. Thunar uses 90% of the desktop font size, 8px sidebar insets with an 8px scrollbar gutter, 12px × 16px toolbar padding, and 10px × 16px padding inside breadcrumb buttons.
 
 ## Preview
 
@@ -22,6 +22,13 @@ File view hover and selection highlights have square corners, and empty list spa
 
 These are renders of real GTK widgets. Hikaide does not bundle icons or fonts. GTK3 and GTK4 file chooser lists prefer symbolic icons from the selected icon theme, which follow the foreground color. Thunar's drag-selection rectangle has a translucent gray fill and a 1px border.
 
+
+| Light Thunar | Light GTK3 / GTK4 |
+| --- | --- |
+| ![Light Thunar](docs/images/thunar-light.png) | ![Light GTK3 widgets](docs/images/gtk3-widgets-light.png) |
+
+[GTK4 light widgets](docs/images/gtk4-widgets-light.png) · [Light context menu](docs/images/context-menu-light.png) · [Light preferences](docs/images/preferences-light.png) · [Light file chooser](docs/images/filechooser-light.png)
+
 ## Install
 
 From the repository root, run:
@@ -30,33 +37,33 @@ From the repository root, run:
 python3 scripts/install_gtk_theme.py
 ```
 
-The default destination is `${XDG_DATA_HOME:-$HOME/.local/share}/themes/Hikaide`. For the traditional `~/.themes` location, use:
+The default theme root is `${XDG_DATA_HOME:-$HOME/.local/share}/themes`; both `Hikaide` (dark) and `Hikaide-Light` are installed together. For the traditional `~/.themes` location, use:
 
 ```sh
 python3 scripts/install_gtk_theme.py --dest "$HOME/.themes"
 ```
 
-No build step, Sass dependency, or root privileges are needed. The installer changes only the Hikaide theme directory and its backups. It leaves desktop settings, user CSS, icons, fonts, and cursors untouched.
+No build step, Sass dependency, or root privileges are needed. The installer materializes both palettes, validates their resources, then replaces the pair with rollback on failure. It changes only these two theme directories and their backups. It leaves desktop settings, user CSS, icons, fonts, and cursors untouched.
 
 The installer resolves CSS imports and indicator assets to their installed locations, so appearance managers can symlink `gtk.css` into a user configuration directory without breaking relative paths. Reinstall after moving the theme to a different location.
 
 ### Activate
 
-Choose **Hikaide** in your existing GTK appearance manager, such as nwg-look or XFCE Appearance, then reopen applications as needed.
+Choose **Hikaide** for dark mode or **Hikaide-Light** for light mode in your existing GTK appearance manager, such as nwg-look or XFCE Appearance, then reopen applications as needed.
 
 For sessions that use GSettings for GTK appearance:
 
 ```sh
-gsettings set org.gnome.desktop.interface gtk-theme Hikaide
+gsettings set org.gnome.desktop.interface gtk-theme Hikaide-Light
 ```
 
 If your session uses xsettingsd or GTK settings files, select the same theme name through its existing appearance configuration. Hikaide does not install a settings service.
 
 ### Update and restore
 
-Run the same installer command with the same destination to update. The installer stages the complete theme before replacing it and preserves the previous installation under `.Hikaide-backup-*/Hikaide` beside the destination. It refuses to replace symlinks or unrelated directories.
+Run the same installer command with the same destination to update. The installer stages both complete themes before replacing either and preserves the previous pair under `.Hikaide-backup-*/` beside the destination. If replacement fails, both previous themes are restored. It refuses to replace symlinks or unrelated directories.
 
-To restore a previous version, move the current Hikaide directory aside and copy the backed-up `Hikaide` directory back into the theme root. Keep backups until you have checked the update; remove older backups manually when no longer needed.
+To restore a previous version, move the current pair aside and copy both backed-up theme directories back into the theme root. Keep backups until you have checked the update; remove older backups manually when no longer needed.
 
 ## Compatibility
 
@@ -66,7 +73,7 @@ To restore a previous version, move the current Hikaide directory aside and copy
 | Thunar | Icon, detailed and compact views; sidebar; toolbar; pathbar; context menus; workflow dialogs |
 | GTK4 | Native entries, lists and grids, column headers, dropdowns, popover menus, headerbars, and common controls |
 
-Both normal and dark variants use the same dark design. Error, warning, and success colors are reserved for semantic messages.
+`Hikaide` preserves the original dark design. `Hikaide-Light/gtk.css` uses an opaque `#f7f7f7` base with `#1b1b1b` text; its `gtk-dark.css` loads a self-contained dark fallback for applications that explicitly request it. Select the Light theme by name for GTK3 applications; a system color-scheme preference alone does not select its stylesheet. Error, warning, and success colors are reserved for semantic messages.
 
 Hover fades apply to native controls such as buttons, menu items, tabs, and GTK4 list/grid items. Thunar's GTK3 file views and sidebar use shared cell renderers; this CSS theme cannot provide independent per-item fades there. That requires animation support in Thunar/Exo rather than additional CSS transition rules. See [GTK3's cell-rendering implementation](https://github.com/GNOME/gtk/blob/gtk-3-24/gtk/gtkcellrenderer.c#L749).
 
@@ -77,18 +84,19 @@ GTK2, Qt, GNOME Shell, and window-manager decorations are outside the theme's sc
 ## Development
 
 ```text
-themes/Hikaide/
-  index.theme
-  assets/          Check, mixed-state, and radio indicators
-  shared/          Named colors and common widget rules
+theme-src/
+  palettes/        Dark and light semantic colors
+  assets/          Palette-generated check, mixed-state and radio indicators
+  shared/          Canonical common widget rules
   gtk-3.0/         GTK3 nodes and Thunar-specific styling
   gtk-4.0/         Native GTK4 styling
-scripts/           Installer
+themes/            Generated Hikaide and Hikaide-Light release trees
+scripts/           Materializer and paired installer
 tests/             Installer and GTK/Thunar runtime checks
 docs/images/       Preview screenshots
 ```
 
-Edit the palette in [colors.css](themes/Hikaide/shared/colors.css). Shared geometry and fades live in [widgets.css](themes/Hikaide/shared/widgets.css); Thunar-specific spacing lives in the [GTK3 stylesheet](themes/Hikaide/gtk-3.0/gtk.css). GTK3 has no numeric CSS variables, so related geometry rules are grouped directly in the stylesheets.
+Edit the palettes in [theme-src/palettes/](theme-src/palettes/). Shared geometry and fades live in [widgets.css](theme-src/shared/widgets.css); Thunar-specific spacing lives in the [GTK3 stylesheet](theme-src/gtk-3.0/gtk.css). Regenerate release trees with `python3 scripts/materialize.py`; the installer generates them automatically in staging. GTK3 has no numeric CSS variables, so related geometry rules are grouped directly in the stylesheets.
 
 Run the installer tests:
 
@@ -99,13 +107,15 @@ python3 -m unittest discover -s tests -v
 Render GTK widgets and exercise Thunar on private Broadway displays:
 
 ```sh
-python3 tests/run_checks.py
-python3 tests/run_checks.py --thunar
+python3 tests/run_checks.py --variant dark --thunar
+python3 tests/run_checks.py --variant light --thunar
 ```
 
 The render checks require Python/PyGObject with Cairo support and GTK3/GTK4 Broadway backends. The GTK3 timing check verifies intermediate hover colors on buttons, menu items, and list rows in both directions, and immediate state changes when animations are disabled. Thunar checks also require Thunar 4.20, a C compiler, `pkg-config`, GTK3 development headers, and `dbus-run-session`. No dependencies are downloaded automatically.
 
-Tests use temporary XDG directories, private D-Bus sessions, and disposable file fixtures. Screenshots and logs go to `.test-output/`, or the directory supplied with `--output`. File-operation dialogs are closed without accepting operations; existing desktop settings and running Thunar instances are left alone.
+The standard-library installer and contrast tests need no runtime GTK session; indicator render assertions additionally use `rsvg-convert` and Pillow.
+
+Tests use temporary XDG directories, private D-Bus sessions, and disposable file fixtures. Screenshots and logs go to `.test-output/`, or the directory supplied with `--output`, grouped by variant. The light suite also renders the explicit dark fallback. Contrast, indicator renders, import containment and pair rollback are checked automatically. File-operation dialogs are closed without accepting operations; existing desktop settings and running Thunar instances are left alone.
 
 Before committing, run:
 

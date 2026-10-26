@@ -1,0 +1,48 @@
+/* Palette shared by GTK3 and GTK4. No icon, cursor or font settings. */
+@define-color haku_base #f7f7f7;
+@define-color haku_sidebar #f0f0f0;
+@define-color haku_surface #ffffff;
+@define-color haku_hover #e9e9e9;
+@define-color haku_active #dfdfdf;
+@define-color haku_selection #dddddd;
+@define-color haku_selection_backdrop #e7e7e7;
+@define-color haku_focus #d5d5d5;
+@define-color haku_fg #1b1b1b;
+@define-color haku_secondary #555555;
+@define-color haku_disabled #767676;
+@define-color haku_thumb #b8b8b8;
+@define-color haku_thumb_hover #969696;
+@define-color haku_white #ffffff;
+@define-color haku_caret #1b1b1b;
+@define-color haku_indicator #1b1b1b;
+@define-color haku_slider_focus #000000;
+@define-color haku_view_row_hover @haku_hover;
+/* Exo multiplies icon pixels by these translucent state colors. */
+@define-color haku_view_hover alpha(#000000, 0.055);
+@define-color haku_view_selected alpha(#000000, 0.11);
+@define-color haku_view_backdrop alpha(#000000, 0.075);
+/* Reserved for error/warning/success messages, never decorative accents. */
+@define-color error_color #a52b2b;
+@define-color warning_color #805b13;
+@define-color success_color #34652b;
+
+/* Conventional names used by GTK applications and cell renderers. */
+@define-color theme_bg_color @haku_base;
+@define-color theme_fg_color @haku_fg;
+@define-color theme_base_color @haku_base;
+@define-color theme_text_color @haku_fg;
+@define-color theme_selected_bg_color @haku_selection;
+@define-color theme_selected_fg_color @haku_fg;
+@define-color theme_unfocused_bg_color @haku_base;
+@define-color theme_unfocused_fg_color @haku_secondary;
+@define-color theme_unfocused_base_color @haku_base;
+@define-color theme_unfocused_text_color @haku_fg;
+@define-color theme_unfocused_selected_bg_color @haku_selection_backdrop;
+@define-color theme_unfocused_selected_fg_color @haku_fg;
+@define-color insensitive_bg_color @haku_surface;
+@define-color insensitive_fg_color @haku_disabled;
+@define-color insensitive_base_color @haku_base;
+@define-color borders transparent;
+@define-color unfocused_borders transparent;
+@define-color link_color @haku_fg;
+@define-color visited_link_color @haku_secondary;

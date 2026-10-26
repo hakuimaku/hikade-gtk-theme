@@ -129,13 +129,14 @@ window.thunar { background-color: @haku_base; font-size: 0.9em; }
   color: @haku_fg;
 }
 .thunar .standard-view .view { border-radius: 0; }
+.thunar .standard-view .view.cell:hover:not(:selected) { background-color: @haku_view_row_hover; }
 .thunar .standard-view { background-color: @haku_base; }
-/* Thunar multiplies icons by the Exo view's state background; alpha keeps them legible. */
+/* Thunar uses the Exo state background to tint icons as well as paint highlights. */
 .thunar .standard-view widget.view { background-color: transparent; }
-.thunar .standard-view widget.view:hover { background-color: alpha(@haku_white, 0.05); }
-.thunar .standard-view widget.view:selected { background-color: alpha(@haku_white, 0.107); }
+.thunar .standard-view widget.view:hover { background-color: @haku_view_hover; }
+.thunar .standard-view widget.view:selected { background-color: @haku_view_selected; }
 .thunar .standard-view widget.view:active,
-.thunar .standard-view widget.view:selected:backdrop { background-color: alpha(@haku_white, 0.07); }
+.thunar .standard-view widget.view:selected:backdrop { background-color: @haku_view_backdrop; }
 /* Exo adds a class to the view instead of creating a rubberband node. */
 .thunar .standard-view widget.view.rubberband,
 .thunar .standard-view widget.view.rubberband:backdrop {

@@ -1,0 +1,63 @@
+@import url("../shared/colors.css");
+@import url("../shared/widgets.css");
+
+/* GTK4 has text subnodes, popover contents and virtualized list/grid rows. */
+window { border-radius: 8px; }
+window > contents { background-color: @haku_base; color: @haku_fg; }
+entry > text, spinbutton > text { background-color: transparent; color: inherit; }
+entry > text > selection, textview text selection {
+  background-color: @haku_thumb;
+  color: @haku_fg;
+}
+listview, gridview, columnview, .view {
+  background-color: @haku_base;
+  color: @haku_fg;
+}
+listview > row, gridview > child { padding: 4px 8px; border-radius: 0; }
+gridview > child:hover { background-color: @haku_hover; }
+gridview > child:focus { background-color: @haku_active; }
+gridview > child:selected { background-color: @haku_selection; color: @haku_fg; }
+gridview > child:selected:focus { background-color: @haku_focus; }
+gridview > child:selected:backdrop { background-color: @haku_selection_backdrop; }
+gridview > child, menubar > item {
+  transition: background-color 200ms ease-in-out, color 200ms ease-in-out;
+}
+columnview header button { border-radius: 0; background-color: @haku_sidebar; }
+columnview header button:hover { background-color: @haku_hover; }
+
+popover { background-color: transparent; }
+popover > contents {
+  padding: 8px;
+  border-radius: 8px;
+  background-color: @haku_surface;
+  color: @haku_fg;
+}
+popover > arrow { background-color: @haku_surface; }
+popover modelbutton {
+  min-height: 24px;
+  padding: 8px 16px;
+  border-radius: 8px;
+}
+popover modelbutton:hover, popover modelbutton:focus, popover modelbutton:selected {
+  background-color: @haku_active;
+  color: @haku_fg;
+}
+popover separator { margin: 4px 8px; }
+menubar { padding: 4px 8px; background-color: @haku_base; }
+menubar > item { padding: 4px 8px; border-radius: 8px; }
+menubar > item:hover, menubar > item:selected { background-color: @haku_active; }
+
+dropdown > button, menubutton > button { border-radius: 8px; }
+dropdown arrow, expander-widget > box > title > expander {
+  min-width: 16px;
+  min-height: 16px;
+  -gtk-icon-source: -gtk-icontheme("pan-down-symbolic");
+}
+treeexpander > expander {
+  min-width: 16px;
+  min-height: 16px;
+  -gtk-icon-source: -gtk-icontheme("pan-end-symbolic");
+}
+treeexpander > expander:checked { -gtk-icon-transform: rotate(90deg); }
+dialog box.dialog-vbox { padding: 12px; }
+dialog box.dialog-action-area { padding: 8px; }

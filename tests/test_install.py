@@ -4,10 +4,13 @@ import importlib.util
 from pathlib import Path
 import re
 import tempfile
+import sys
 import unittest
 from unittest.mock import patch
 from urllib.parse import unquote, urlparse
 
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 
 spec = importlib.util.spec_from_file_location("installer", Path(__file__).resolve().parents[1] / "scripts/install_gtk_theme.py")
 installer = importlib.util.module_from_spec(spec)
@@ -24,8 +27,8 @@ class InstallTests(unittest.TestCase):
             target, backup = installer.install(root)
             self.assertIsNone(backup)
             for name in installer.REQUIRED:
-                if b'url("' not in (installer.SOURCE / name).read_bytes():
-                    self.assertEqual((target / name).read_bytes(), (installer.SOURCE / name).read_bytes())
+                if b'url("' not in (installer.ROOT / "themes/Hikaide" / name).read_bytes():
+                    self.assertEqual((target / name).read_bytes(), (installer.ROOT / "themes/Hikaide" / name).read_bytes())
             (target / "local-edit").write_text("preserve me")
             target, backup = installer.install(root)
             self.assertEqual((backup / "local-edit").read_text(), "preserve me")
@@ -67,12 +70,12 @@ class InstallTests(unittest.TestCase):
                 installer.install(root)
             self.assertEqual((target / "keep").read_text(), "unrelated data")
         with self.assertRaises(ValueError):
-            installer.install(installer.SOURCE.parent)
+            installer.install(installer.ROOT / "themes")
 
     def test_incomplete_source_does_not_touch_destination(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            with patch.object(installer, "SOURCE", root / "missing"):
+            with patch("materialize.SOURCE", root / "missing"):
                 with self.assertRaises(ValueError):
                     installer.install(root / "themes")
             self.assertFalse((root / "themes").exists())
@@ -82,10 +85,11 @@ class InstallTests(unittest.TestCase):
             root = Path(directory)
             target, _ = installer.install(root)
             (target / "local-edit").write_text("keep")
+            (root / "Hikaide-Light/local-edit").write_text("light keep")
             rename = Path.rename
 
             def fail_staged(source, destination):
-                if source.parent.name.startswith(".hikaide-install-"):
+                if source.parent.name.startswith(".hikaide-install-") and source.name == "Hikaide-Light":
                     raise OSError("simulated replacement failure")
                 return rename(source, destination)
 
@@ -93,6 +97,29 @@ class InstallTests(unittest.TestCase):
                 with self.assertRaises(OSError):
                     installer.install(root)
             self.assertEqual((target / "local-edit").read_text(), "keep")
+            self.assertEqual((root / "Hikaide-Light/local-edit").read_text(), "light keep")
+
+    def test_unmanaged_light_target_prevents_dark_update(self):
+        """Validate both destinations before replacing either variant."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            target, _ = installer.install(root)
+            (target / "local-edit").write_text("keep")
+            (root / "Hikaide-Light/index.theme").write_text("unmanaged")
+            with self.assertRaises(ValueError):
+                installer.install(root)
+            self.assertEqual((target / "local-edit").read_text(), "keep")
+
+    def test_source_symlink_is_rejected(self):
+        """Do not follow symlinks from canonical sources."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "source"
+            source.mkdir()
+            (source / "escape").symlink_to(installer.SOURCE / "index.theme")
+            with patch("materialize.SOURCE", source), self.assertRaises(ValueError):
+                installer.install(root / "themes")
+            self.assertFalse((root / "themes").exists())
 
 
 if __name__ == "__main__":

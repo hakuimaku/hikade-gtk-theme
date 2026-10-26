@@ -52,11 +52,19 @@ with tempfile.TemporaryDirectory(prefix="hikaide-chooser-") as directory:
             assert len(surfaces) == 1 and surfaces[0] is not None, surfaces
             surface = surfaces[0]  # Inspect the rendered folder icon.
             surface.write_to_png(sys.argv[1])
+            # Capture the chooser as well as the cached icon for visual review.
+            import cairo
+            screenshot = cairo.ImageSurface(cairo.FORMAT_ARGB32, window.get_allocated_width(), window.get_allocated_height())
+            window.draw(cairo.Context(screenshot))
+            screenshot.write_to_png(str(Path(sys.argv[1]).with_name("gtk-filechooser-window.png")))
             # Native ARGB words preserve channel order on either byte order.
             pixels = memoryview(surface.get_data()).cast("I")  # Native ARGB pixel values.
             stride = surface.get_stride() // 4  # Pixel words per surface row.
             assert pixels[8 * stride + 3] == pixels[8 * stride + 12] == 0
-            assert pixels[4 * stride + 4] == pixels[8 * stride + 8] == 0xFFD8D8D8
+            foreground = chooser.get_style_context().get_color(Gtk.StateFlags.NORMAL)
+            channel = round(foreground.red * 255)
+            expected = 0xFF000000 | channel << 16 | channel << 8 | channel
+            assert pixels[4 * stride + 4] == pixels[8 * stride + 8] == expected
             print("PASS GTK3 chooser: selected theme's symbolic folder cached and recolored")
         except Exception as error:
             failures.append(error)

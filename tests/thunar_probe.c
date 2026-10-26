@@ -98,6 +98,32 @@ static void select_file(void) {
   gtk_widget_grab_focus(view);
 }
 
+/* File hover must brighten the canvas without replacing a selected row's paint. */
+static void check_file_hover(GtkWidget *view) {
+  g_assert_nonnull(view);
+  GtkStyleContext *context = gtk_widget_get_style_context(view); /* Actual Exo drawing context. */
+  GdkRGBA base, hover, selected, selected_hover; /* Palette and resolved state paints. */
+  g_assert_true(gtk_style_context_lookup_color(context, "haku_base", &base));
+  gtk_style_context_save(context);
+  if (GTK_IS_TREE_VIEW(view)) gtk_style_context_add_class(context, GTK_STYLE_CLASS_CELL);
+  gtk_style_context_set_state(context, GTK_STATE_FLAG_PRELIGHT);
+  gtk_style_context_get_background_color(context, GTK_STATE_FLAG_PRELIGHT, &hover);
+  double level = hover.red * hover.alpha + base.red * (1.0 - hover.alpha); /* Visible neutral hover. */
+  g_print("HOVER %s base=%.4f composite=%.4f tint=%.4f alpha=%.4f\n",
+          G_OBJECT_TYPE_NAME(view), base.red, level, hover.red, hover.alpha);
+  if (g_strcmp0(g_getenv("HIKAIDE_VARIANT"), "light") == 0)
+    g_assert_cmpfloat(level, <, base.red - 0.001);
+  else
+    g_assert_cmpfloat(level, >, base.red + 0.001);
+  gtk_style_context_set_state(context, GTK_STATE_FLAG_SELECTED);
+  gtk_style_context_get_background_color(context, GTK_STATE_FLAG_SELECTED, &selected);
+  gtk_style_context_set_state(context, GTK_STATE_FLAG_SELECTED | GTK_STATE_FLAG_PRELIGHT);
+  gtk_style_context_get_background_color(context, GTK_STATE_FLAG_SELECTED | GTK_STATE_FLAG_PRELIGHT, &selected_hover);
+  g_assert_cmpfloat_with_epsilon(selected_hover.red, selected.red, 0.001);
+  g_assert_cmpfloat_with_epsilon(selected_hover.alpha, selected.alpha, 0.001);
+  gtk_style_context_restore(context);
+}
+
 /* Exo paints the drag rectangle with a class on the view itself. */
 static void check_rubberband(void) {
   GtkWidget *view = find_type(main_window, "ExoIconView"); /* Real Thunar icon view. */
@@ -138,19 +164,22 @@ static gboolean exercise(gpointer unused) {
   g_free(desktop_font);
   GdkRGBA bg;
   gtk_style_context_get_background_color(gtk_widget_get_style_context(main_window), GTK_STATE_FLAG_NORMAL, &bg);
-  g_assert_cmpfloat_with_epsilon(bg.red, 16.0 / 255, 0.001);
+  g_assert_cmpfloat_with_epsilon(bg.red, g_strcmp0(g_getenv("HIKAIDE_VARIANT"), "light") == 0 ? 247.0 / 255 : 16.0 / 255, 0.001);
   g_assert_cmpfloat_with_epsilon(bg.green, bg.red, 0.001);
   g_assert_cmpfloat_with_epsilon(bg.blue, bg.red, 0.001);
   action("<Actions>/ThunarWindow/view-as-icons");
+  check_file_hover(find_type(main_window, "ExoIconView"));
   check_rubberband();
   /* Schedule before actions: modal dialogs enter their own main loop. */
   g_timeout_add(700, capture, NULL);
   if (g_str_equal(scenario, "detailed")) {
     action("<Actions>/ThunarWindow/view-as-detailed-list");
     g_assert_nonnull(find_type(main_window, "ThunarDetailsView"));
+    check_file_hover(find_type(main_window, "ExoTreeView"));
   } else if (g_str_equal(scenario, "compact")) {
     action("<Actions>/ThunarWindow/view-as-compact-list");
     g_assert_nonnull(find_type(main_window, "ThunarCompactView"));
+    check_file_hover(find_type(main_window, "ExoIconView"));
   } else if (g_str_equal(scenario, "tabs")) {
     action("<Actions>/ThunarWindow/new-tab");
   } else if (g_str_equal(scenario, "pathbar")) {
