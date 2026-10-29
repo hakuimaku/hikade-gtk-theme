@@ -2,7 +2,7 @@
    Firefox / Zen Browser UI Refinements (Hikaide Style)
    - Synchronized with Hikaide theme colors (#161616 surface, #d8d8d8 fg)
    - Balanced comfortable padding across right-click menus, tabs, and URL bar
-   - Clean, borderless / subtle border design with 8px radius
+   - Clean, solid background with subtle border design and 8px radius
    - Adaptive dark and light palette with Zen scheme sync
    ========================================================================== */
 
@@ -26,8 +26,8 @@
         --haku-menu-bg: #ffffff;
         --haku-menu-fg: #1b1b1b;
         --haku-menu-border: rgba(0, 0, 0, 0.10);
-        --haku-menu-hover: #ececec;
-        --haku-menu-hover-fg: #111111;
+        --haku-menu-hover: #e2e2e2;
+        --haku-menu-hover-fg: #000000;
         --haku-menu-disabled: #888888;
         --haku-menu-separator: #e5e5e5;
         --haku-menu-shadow: rgba(0, 0, 0, 0.12);
@@ -58,8 +58,8 @@
         --haku-menu-bg: #ffffff;
         --haku-menu-fg: #1b1b1b;
         --haku-menu-border: rgba(0, 0, 0, 0.10);
-        --haku-menu-hover: #ececec;
-        --haku-menu-hover-fg: #111111;
+        --haku-menu-hover: #e2e2e2;
+        --haku-menu-hover-fg: #000000;
         --haku-menu-disabled: #888888;
         --haku-menu-separator: #e5e5e5;
         --haku-menu-shadow: rgba(0, 0, 0, 0.12);
@@ -75,24 +75,11 @@ menupopup {
     --panel-color: var(--haku-menu-fg) !important;
     --panel-border-color: var(--haku-menu-border) !important;
     --panel-border-radius: 8px !important;
-    --panel-padding: 4px 0 !important;
-    --panel-box-shadow: 0 4px 16px var(--haku-menu-shadow) !important;
-    --panel-box-shadow-margin: 6px !important;
     --menu-background-color: var(--haku-menu-bg) !important;
     --menu-color: var(--haku-menu-fg) !important;
     --menu-border-color: var(--haku-menu-border) !important;
     -moz-appearance: none !important;
     appearance: none !important;
-    background: transparent !important;
-    background-color: transparent !important;
-    color: var(--haku-menu-fg) !important;
-    border: none !important;
-    border-radius: 8px !important;
-    padding: 0 !important;
-    box-shadow: none !important;
-}
-
-menupopup::part(content) {
     background: var(--haku-menu-bg) !important;
     background-color: var(--haku-menu-bg) !important;
     color: var(--haku-menu-fg) !important;
@@ -106,6 +93,7 @@ menupopup::part(content) {
     -moz-appearance: none !important;
     appearance: none !important;
     background: transparent !important;
+    background-color: transparent !important;
     border: none !important;
     border-radius: 8px !important;
     padding: 0 !important;
