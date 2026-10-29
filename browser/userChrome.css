@@ -2,7 +2,7 @@
    Firefox / Zen Browser UI Refinements (Hikaide Style)
    - Synchronized with Hikaide theme colors (#161616 surface, #d8d8d8 fg)
    - Balanced comfortable padding across right-click menus, tabs, and URL bar
-   - Clean, solid background with subtle border design and 8px radius
+   - Native popup window handling, only styling internal items (no box-shadow)
    - Adaptive dark and light palette with Zen scheme sync
    ========================================================================== */
 
@@ -16,7 +16,6 @@
     --haku-menu-hover-fg: #ffffff;
     --haku-menu-disabled: #666666;
     --haku-menu-separator: #262626;
-    --haku-menu-shadow: rgba(0, 0, 0, 0.45);
     --haku-caret: #ffffff;
 }
 
@@ -30,7 +29,6 @@
         --haku-menu-hover-fg: #000000;
         --haku-menu-disabled: #888888;
         --haku-menu-separator: #e5e5e5;
-        --haku-menu-shadow: rgba(0, 0, 0, 0.12);
         --haku-caret: #1b1b1b;
     }
 }
@@ -46,7 +44,6 @@
         --haku-menu-hover-fg: #ffffff;
         --haku-menu-disabled: #666666;
         --haku-menu-separator: #262626;
-        --haku-menu-shadow: rgba(0, 0, 0, 0.45);
         --haku-caret: #ffffff;
     }
 }
@@ -62,41 +59,20 @@
         --haku-menu-hover-fg: #000000;
         --haku-menu-disabled: #888888;
         --haku-menu-separator: #e5e5e5;
-        --haku-menu-shadow: rgba(0, 0, 0, 0.12);
         --haku-caret: #1b1b1b;
     }
 }
 
-/* --- Context Menus & Popups (menupopup) --- */
+/* --- Context Menus (menupopup) --- */
 menupopup {
-    --panel-background-color: var(--haku-menu-bg) !important;
     --panel-background: var(--haku-menu-bg) !important;
-    --panel-text-color: var(--haku-menu-fg) !important;
+    --panel-background-color: var(--haku-menu-bg) !important;
     --panel-color: var(--haku-menu-fg) !important;
+    --panel-text-color: var(--haku-menu-fg) !important;
     --panel-border-color: var(--haku-menu-border) !important;
-    --panel-border-radius: 8px !important;
     --menu-background-color: var(--haku-menu-bg) !important;
     --menu-color: var(--haku-menu-fg) !important;
     --menu-border-color: var(--haku-menu-border) !important;
-    -moz-appearance: none !important;
-    appearance: none !important;
-    background: var(--haku-menu-bg) !important;
-    background-color: var(--haku-menu-bg) !important;
-    color: var(--haku-menu-fg) !important;
-    border: 1px solid var(--haku-menu-border) !important;
-    border-radius: 8px !important;
-    padding: 4px !important;
-    box-shadow: 0 4px 16px var(--haku-menu-shadow) !important;
-}
-
-.menupopup-arrowscrollbox {
-    -moz-appearance: none !important;
-    appearance: none !important;
-    background: transparent !important;
-    background-color: transparent !important;
-    border: none !important;
-    border-radius: 8px !important;
-    padding: 0 !important;
 }
 
 menupopup menuitem,
@@ -108,11 +84,9 @@ menupopup menu {
     padding-block: 5px !important;
     padding-inline: 10px !important;
     margin-block: 1px !important;
-    margin-inline: 0 !important;
+    margin-inline: 2px !important;
     border-radius: 6px !important;
     color: var(--haku-menu-fg) !important;
-    background-color: transparent !important;
-    border: none !important;
 }
 
 menupopup menuitem:hover,
@@ -129,7 +103,6 @@ menupopup menuitem[disabled="true"],
 menupopup menu[disabled="true"],
 menupopup menuitem[_moz-menuactive="true"][disabled="true"] {
     color: var(--haku-menu-disabled) !important;
-    background-color: transparent !important;
 }
 
 menuseparator {
